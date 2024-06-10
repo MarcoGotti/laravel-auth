@@ -10,6 +10,12 @@
         </div>
     </header>
 
+    @if (session('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
+        </div>
+    @endif
+
     <div class="container p-5">
         <div class="table-responsive">
             <table class="table table-dark text white">
@@ -40,8 +46,10 @@
                             <td>{{ $project->name }}</td>
                             <td>{{ $project->slug }}</td>
                             <td>
-                                <a href="{{ route('admin.projects.show', $project) }}">View</a>
-                                <a href="{{ route('admin.projects.edit', $project) }}">edit</a>
+                                <a class="btn btn-success btn-sm"
+                                    href="{{ route('admin.projects.show', $project) }}">View</a>
+                                <a class="btn btn-secondary btn-sm"
+                                    href="{{ route('admin.projects.edit', $project) }}">Edit</a>
 
                                 <!-- Modal trigger button -->
                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
@@ -51,7 +59,7 @@
 
                                 <!-- Modal Body -->
                                 <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
-                                <div class="modal fade" id="modalId-{{ $project->id }}" tabindex="-1"
+                                <div class="modal fade text-black" id="modalId-{{ $project->id }}" tabindex="-1"
                                     data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
                                     aria-labelledby="modalTitleId-{{ $project->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
@@ -59,12 +67,12 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="modalTitleId-{{ $project->id }}">
-                                                    Delete th project
+                                                    Delete <strong>{{ $project->name }}</strong>
                                                 </h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
-                                            <div class="modal-body">You sure you want?</div>
+                                            <div class="modal-body">Are you sure? </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary btn-sm"
                                                     data-bs-dismiss="modal">

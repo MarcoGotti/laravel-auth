@@ -34,13 +34,16 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        //dd($request->all());
         $validatedData = $request->validated();
         $validatedData['slug'] = Str::of($request->name)->slug('-');
 
-        $image_path = Storage::put('uploads', $request->cover_image);
+        /* $image_path = Storage::put('uploads', $request->cover_image);
+        $validatedData['cover_image'] = $image_path; */
 
-        $validatedData['cover_image'] = $image_path;
+        if ($request->has('cover_image')) {
+
+            $validatedData['cover_image'] = Storage::put('uploads', $request->cover_image);
+        }
 
         Project::create($validatedData);
 
@@ -60,7 +63,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        return view('admin.projects.edit', compact('project'));
     }
 
     /**
@@ -68,7 +71,23 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        $validatedData = $request->validated(); //validate
+        $validatedData['slug'] = Str::of($request->name)->slug('-');
+
+        if ($request->has('cover_image')) {
+            //check if the current post has an image
+            if ($project->cover_image) {
+                //if so, delete it
+                Storage::delete($project->cover_image);
+            }
+            //and upload the new image            
+            $validatedData['cover_image'] = Storage::put('uploads', $request->cover_image);
+        }
+
+        $project->update($validatedData); //update
+
+        return to_route('admin.projects.index')->with('message', 'Project updated successfully'); //redirect
+
     }
 
     /**
