@@ -21,7 +21,7 @@
     @vite(['resources/js/app.js'])
 </head>
 
-<body>
+<body class="bg-secondary">
     <div id="app">
 
 

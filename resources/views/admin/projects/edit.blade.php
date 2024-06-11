@@ -48,14 +48,15 @@
 
                     {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> --}}
 
-                    <form action="{{-- {{ route('admin.projects.deleteImage', $project) }} --}}" method="post">
+                    {{-- !!! ATTENZIONE con Form non funziona più l'Upload --}}
+                    {{-- <form action="{{ route('admin.projects.deleteImage', $project) }}" method="post">
                         @csrf
                         @method('DELETE')
 
                         <button class="btn btn-danger btn-sm rounded-pill mt-3" type="submit">
                             <i class="fas fa-xmark fa-lg"></i>delete img
                         </button>
-                    </form>
+                    </form> --}}
                 </div>
             </div>
 

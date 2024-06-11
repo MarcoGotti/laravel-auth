@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Guest\Pagecontroller;
+use App\Http\Controllers\Guest\Projectcontroller as GuestProjectcontroller;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,9 +18,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [Pagecontroller::class, 'index'])->name('welcome');
+Route::resource('projects', GuestProjectcontroller::class)->only(['index', 'show'])->parameters([
+    'projects' => 'project:slug'
+]);
 
 Route::middleware(['auth', 'verified'])
     ->name('admin.')
