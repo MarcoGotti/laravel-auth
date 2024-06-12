@@ -45,8 +45,8 @@
                     @enderror
 
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" name="image_delete" checked />
-                        <label class="form-check-label" for="image_delete"> Keep image </label>
+                        <input class="form-check-input" type="checkbox" value="" name="image_delete" />
+                        <label class="form-check-label" for="image_delete">Check to delete the current image</label>
                     </div>
 
 

@@ -87,7 +87,7 @@ class ProjectController extends Controller
             $validatedData['cover_image'] = Storage::put('uploads', $request->cover_image);
         } */
 
-        if ($request->has('cover_image') || (!array_key_exists('image_delete', $validatedData))) {
+        if ($request->has('cover_image') || (array_key_exists('image_delete', $validatedData))) {
             //check if the current post has an image
             if ($project->cover_image) {
                 //if so, delete it
