@@ -44,6 +44,13 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
 
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" name="image_delete" checked />
+                        <label class="form-check-label" for="image_delete"> Keep image </label>
+                    </div>
+
+
+
                     {{-- <div id="coverImageHelper" class="form-text">Upload an image</div> --}}
 
                     {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> --}}

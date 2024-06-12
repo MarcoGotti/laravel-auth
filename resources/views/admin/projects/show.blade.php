@@ -5,13 +5,13 @@
         <div class="row g-0">
             <div class="col">
                 <div class="border border-3 border-black ">
-                    <img width="100%" src="{{ asset('storage/' . $project->cover_image) }}" alt="no image">
+
+                    @if (Str::startsWith($project->cover_image, 'https://'))
+                        <img class="border border-black" width="400" src="{{ $project->cover_image }}" alt="no image">
+                    @else
+                        <img width="400" src="{{ asset('storage/' . $project->cover_image) }}" alt="no image">
+                    @endif
                 </div>
-                {{-- @if (Str::startsWith($project->cover_image, 'https://'))
-                    <img class="border border-black" width="400" src="{{ $project->cover_image }}" alt="no image">
-                @else
-                    <img width="400" src="{{ asset('storage/' . $project->cover_image) }}" alt="no image">
-                @endif --}}
             </div>
             <div class="col">
                 <div class="bg-dark h-100 text-white p-5">

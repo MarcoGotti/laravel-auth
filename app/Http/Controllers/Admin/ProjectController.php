@@ -74,6 +74,9 @@ class ProjectController extends Controller
         $validatedData = $request->validated(); //validate
         $validatedData['slug'] = Str::of($request->name)->slug('-');
 
+        //dd(array_key_exists('image_delete', $validatedData));
+
+        /* Check senza il checkbox
         if ($request->has('cover_image')) {
             //check if the current post has an image
             if ($project->cover_image) {
@@ -82,6 +85,20 @@ class ProjectController extends Controller
             }
             //and upload the new image            
             $validatedData['cover_image'] = Storage::put('uploads', $request->cover_image);
+        } */
+
+        if ($request->has('cover_image') || (!array_key_exists('image_delete', $validatedData))) {
+            //check if the current post has an image
+            if ($project->cover_image) {
+                //if so, delete it
+                Storage::delete($project->cover_image);
+            }
+            //and upload the new image  
+            if ($request->has('cover_image')) {
+                $validatedData['cover_image'] = Storage::put('uploads', $request->cover_image);
+            } else {
+                $validatedData['cover_image'] = '';
+            }
         }
 
         $project->update($validatedData); //update

@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-
+@section('pageTitle', 'list')
 @section('content')
     <header class="bg-dark text-white py-4">
         <div class="container d-flex justify-content-between align-items-center">
