@@ -36,6 +36,7 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
+        //dd($request->all());
         $validatedData = $request->validated();
         $validatedData['slug'] = Str::of($request->name)->slug('-');
 
@@ -46,7 +47,7 @@ class ProjectController extends Controller
 
             $validatedData['cover_image'] = Storage::put('uploads', $request->cover_image);
         }
-
+        //dd($validatedData);
         Project::create($validatedData);
 
         return to_route('admin.projects.index')->with('message', 'project successfully created');
@@ -65,7 +66,8 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        return view('admin.projects.edit', compact('project'));
+        $types = Type::all();
+        return view('admin.projects.edit', compact('project', 'types'));
     }
 
     /**

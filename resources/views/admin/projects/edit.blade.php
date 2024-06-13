@@ -31,6 +31,20 @@
                 <div id="nameHelper" class="form-text text-muted">Type the name of your project</div>
             </div>
 
+            <div class="mb-3">
+                <label for="type_id" class="form-label">Type</label>
+                <select class="form-select form-select-sm" name="type_id" id="type_id">
+                    <option selected disabled>Select one</option>
+
+                    @foreach ($types as $type)
+                        <option value="{{ $type->id }}"
+                            {{ $type->id == old('type_id', $project->type->id) ? 'selected' : '' }}>
+                            {{ $type->level }}</option>
+                    @endforeach
+
+                </select>
+            </div>
+
             <div class="d-flex gap-3 mb-3">
                 <div class="overflow-y-hidden" style="height: 200px">
                     <img width="200" src="{{ asset('storage/' . $project->cover_image) }}" alt="">
@@ -49,21 +63,6 @@
                         <label class="form-check-label" for="image_delete">Check to delete the current image</label>
                     </div>
 
-
-
-                    {{-- <div id="coverImageHelper" class="form-text">Upload an image</div> --}}
-
-                    {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> --}}
-
-                    {{-- !!! ATTENZIONE con Form non funziona più l'Upload --}}
-                    {{-- <form action="{{ route('admin.projects.deleteImage', $project) }}" method="post">
-                        @csrf
-                        @method('DELETE')
-
-                        <button class="btn btn-danger btn-sm rounded-pill mt-3" type="submit">
-                            <i class="fas fa-xmark fa-lg"></i>delete img
-                        </button>
-                    </form> --}}
                 </div>
             </div>
 
