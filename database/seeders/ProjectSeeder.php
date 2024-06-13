@@ -13,7 +13,7 @@ class ProjectSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(Faker $faker): void
+    public function run(Faker $faker, TypeSeeder $type_seeder): void
     {
         for ($i = 0; $i < 5; $i++) {
             $project = new Project();

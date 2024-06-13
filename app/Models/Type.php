@@ -17,6 +17,6 @@ class Type extends Model
      */
     public function projects(): HasMany
     {
-        return $this->hasMany(Project::class, 'foreign_key', 'local_key');
+        return $this->hasMany(Project::class);
     }
 }
