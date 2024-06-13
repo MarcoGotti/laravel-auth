@@ -1,118 +1,209 @@
-## SELECT
+# SCALETTA RELAZIONI 1:N
 
-1- Selezionare tutti i passeggeri (1000)
-2- Selezionare tutti i nomi degli aeroporti, ordinati per nome (100)
-SELECT name FROM `airports` ORDER BY name;
+## Create Migration, Model, Controller, Seeder for entity Category
 
-3- Selezionare tutti i passeggeri che hanno come cognome 'Bartell' (2)
-SELECT \* FROM `passengers` WHERE lastname = 'Bartell';
+```bash
+php artisan make:model -mcrsR Category
+```
 
-4- Selezionare tutti i passeggeri minorenni (considerando solo l'anno di nascita) (117 - nel 2022)
-SELECT \* FROM `passengers` WHERE year(date_of_birth)>2006;
+## Define Migration and Seeder content
 
-5- Selezionare tutti gli aerei che hanno piu' di 200 posti (84)
-6- Selezionare tutti gli aerei che hanno un numero di posti compreso tra 350 e 700 (30)
-SELECT \* FROM `airplanes` WHERE seating_capacity BETWEEN 350 AND 700;
+```php
+ public function up(): void
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('slug');
+            $table->timestamps();
+        });
+    }
 
-7- Selezionare tutti gli ID dei dipendenti che hanno lasciato almeno una compagnia aerea (31077)--->(8939 Distinct)
-SELECT DISTINCT employees.id FROM `employees` JOIN airline_employee ON airline_employee.employee_id = employees.id WHERE layoff_date IS NOT null;
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('categories');
+    }
+/* _____________________________________________ */
+ public function run(): void
+    {
+        $categories = ['programming', 'Fullstack', 'Backend', 'IoT', 'Cyber security'];
 
-8- Selezionare tutti gli ID dei dipendenti che hanno lasciato almeno una compagnia aerea prima del 2006 (493)---->(445 Distinct)
-SELECT DISTINCT employees.id FROM `employees`
-JOIN airline_employee ON airline_employee.employee_id = employees.id
-WHERE year(layoff_date)<=2006;
+        foreach ($categories as $cat) {
+            $category = new Category();
+            $category->name = $cat;
+            $category->slug = Str::of($category->name)->slug('-');;
+            $category->save();
+        }
+    }
+```
 
-9- Selezionare tutti i passeggeri il cui nome inizia con 'Al' (26)
-SELECT \* FROM `passengers` WHERE name LIKE "Al%";
+```bash
+php artisan migrate
+php artisan db:seed --class=CategorySeeder
+```
 
-10- Selezionare tutti i passeggeri nati nel 1960 (11)
-SELECT \* FROM `passengers` WHERE year(date_of_birth) = 1960;
+### Eventually use DatabaseSeeder.php
 
-## JOIN
+```php
+public function run(): void
+    {
+        $this->call([
+            PostSeeder::class
+        ]);
+    }
+```
 
-1- Selezionare tutti i passeggeri del volo 70021493-2 (85)
-SELECT passengers.id, passengers.name, passengers.lastname, flights.number AS Flight FROM `passengers`
-JOIN flight_passenger ON flight_passenger.passenger_id = passengers.id
-JOIN flights ON flights.id = flight_passenger.flight_id
-WHERE flights.number = '70021493-2';
+```bash
+php artisan db:seed
+```
 
-2- Selezionare i voli presi da 'Shirley Stokes' (61)
-SELECT passengers.id, passengers.name, passengers.lastname, flights.number AS Flight FROM `passengers`
-JOIN flight_passenger ON flight_passenger.passenger_id = passengers.id
-JOIN flights ON flights.id = flight_passenger.flight_id
-WHERE passengers.name = "Shirley" AND passengers.lastname ="Stokes";
+## Create Relation between tables
 
-3- Selezionare tutti i passeggeri che hanno usato come documento 'Passport'(775)
-SELECT DISTINCT passengers.name, passengers.lastname FROM passengers
-JOIN document_type_passenger ON document_type_passenger.passenger_id = passengers.id
-WHERE document_type_passenger.document_type_id = 2;
+### Add FK to Dependent table.
 
-4- Selezionare tutti i voli con i relativi passeggeri (65296)
-SELECT flights.number, passengers.id FROM `flights`
-JOIN flight_passenger ON flight_passenger.flight_id = flights.id
-JOIN passengers ON passengers.id = flight_passenger.passenger_id;
+```bash
+php artisan migration add_category_id_foreign_key_to_posts_table
+```
 
-5- Selezionare tutti i voli che partono da 'Charleneland' e arrivano a 'Mauricestad' (3)
-SELECT \* FROM `flights`
-JOIN airports ON airports.id = flights.departure_airport_id
-WHERE departure_airport_id = 10 AND arrival_airport_id = 95;
+```php
+    public function up(): void
+    {
+        Schema::table('posts', function (Blueprint $table) {
 
-<!-- oppure piu semplice -->
+            $table->unsignedBigInteger('category_id')->nullable()->after('id');
 
-SELECT \* FROM `flights`
-WHERE departure_airport_id = 10 AND arrival_airport_id = 95;
+            $table->foreign('category_id')
+                ->references('id')
+                ->on('categories')
+                ->nullOnDelete();
+            /* ->onDelete('set null'); */
+        });
+    }
 
-6- Selezionare tutti gli id dei voli che hanno almeno un passeggero il cui cognome inizia con 'L' (966)
-SELECT DISTINCT flights.id FROM `flights`
-JOIN flight_passenger ON flight_passenger.flight_id = flights.id
-JOIN passengers ON passengers.id = flight_passenger.passenger_id
-WHERE passengers.lastname LIKE "L%";
 
-7- Selezionare i dati delle compagnie dove almeno un impiegato si è stato licenziato (286)
-SELECT DISTINCT airlines.name FROM `airlines`
-JOIN airline_employee ON airline_employee.airline_id = airlines.id
-WHERE layoff_date IS NOT null;
+    public function down(): void
+    {
+        Schema::table('posts', function (Blueprint $table) {
+            //1. Drop the FK
+            $table->dropForeign('posts_category_id_foreign'); //table_column_keyForeign
+            //2. Drop the column
+            $table->dropColumn('category_id'); //column
+        });
+    }
 
-8- Selezionare tutti gli aerei che sono partiti almeno una volta dalla città di 'Domingochester' (12)
-SELECT DISTINCT model FROM `airplanes`
-JOIN flights ON flights.airplane_id = airplanes.id
-WHERE departure_airport_id = 37;
+```
 
-<!-- più elaborato ma vantaggioso -->
+```bash
+php artisan migrate
+```
 
-SELECT DISTINCT model FROM `airplanes`
-JOIN flights ON flights.airplane_id = airplanes.id
-JOIN airports ON airports.id = flights.departure_airport_id
-WHERE airports.city = "Domingochester";
+## Create Relation between Models
 
-9- Selezionare i dati dei tecnici e gli aerei ai quali questi hanno fatto almeno un intervento di manutenzione (1506)
-SELECT employees.name, employees.lastname, airplanes.model AS Airplane FROM `employees`
-JOIN employee_maintenance_work ON employee_maintenance_work.employee_id = employees.id
-JOIN maintenance_works ON maintenance_works.id = employee_maintenance_work.maintenance_work_id
-JOIN airplanes ON airplanes.id = maintenance_works.airplane_id;
+### In model Post.php
 
-10- Selezionare tutti i piloti che hanno viaggiato nel 2021 verso l'aeroporto di 'Abshireland' (4)
+```php
+protected $fillable = ['title', 'content', 'slug', 'cover_image', 'category_id', 'user_id'];
 
-<!-- SELECT * FROM `roles`
-JOIN employees ON employees.role_id = roles.id
-JOIN employee_flight ON employee_flight.employee_id = employees.id
-JOIN flights ON flights.id = employee_flight.flight_id
-WHERE roles.name = "Pilot" AND year(flights.departure_datetime) = 2021 AND flights.arrival_airport_id = 40; -->
+    /**
+     * Get the category that owns the Post
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+```
 
-## GROUP BY
+### In model Category.php
 
-1- Contare quanti lavori di manutenzione ha eseguito ogni impiegato (dell'impiegato vogliamo solo l'ID) (1136)
-SELECT employee_id, COUNT(\*) FROM `employee_maintenance_work` GROUP BY employee_id;
+```php
+/**
+     * Get all of the comments for the Category
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+```
 
-2- Contare quante volte ogni impiegato ha lasciato una compagnia aerea (non mostrare quelli che non hanno mai lasciato; dell'impiegato vogliamo solo l'ID) (8939)
-SELECT employee_id, COUNT(\*) AS Total FROM `airline_employee` WHERE layoff_date GROUP BY employee_id;
+## Creation of a new object $post
 
-3- Contare per ogni volo il numero di passeggeri (del volo vogliamo solo l'ID) (1000)
-SELECT flight_id, COUNT(\*) FROM `flight_passenger` GROUP BY flight_id;
+### In PostController.php
 
-4- Ordinare gli aerei per numero di manutenzioni ricevute (da quello che ne ha di piu'; dell'aereo vogliamo solo l'ID) (100)
-SELECT airplane_id, COUNT(\*) AS Tot FROM `maintenance_works` GROUP BY airplane_id ORDER BY Tot DESC;
+```php
+/* add $variables you want to use */
+public function create()
+    {
+        return view('admin.posts.create', ['categories' => Category::all()]);
+    }
+```
 
-5- Contare quanti passeggeri sono nati nello stesso anno (61)
-6- Contare quanti voli ci sono stati ogni anno (tenendo conto della data di partenza) (11)
-SELECT year(departure_datetime), COUNT(\*) FROM `flights` GROUP BY year(departure_datetime); -->
+### In create.blade.php
+
+```php
+/* add bs5-form-select-custom*/
+<div class="mb-3">
+    <label for="category_id" class="form-label">Category</label>
+    <select class="form-select form-select-sm" name="category_id" id="category_id">
+        <option selected disabled>Select one</option>
+
+            @foreach ($categories as $category)
+                <option value="{{ $category->id }}" {{ $category->id == old('category_id') ? 'selected' : '' }}>
+                    {{ $category->name }}</option>
+            @endforeach
+
+    </select>
+</div>
+```
+
+#### In StorePostRequest.php validatetion against hacker
+
+```php
+/* add FK field that must be validated and hacker-safe: |exists:... */
+'category_id' => 'nullable|exists:categories,id',
+```
+
+#### In show.blade.php
+
+```php
+/* posts could be uncategorized. category_id could be NULL */
+<div class="metadata">
+    <strong>Categories</strong> {{ $post->category ? $post->category->name : 'Uncategorized' }}
+</div>
+```
+
+## Update of an object $post
+
+### In PostController.php
+
+```php
+/* add $variables you want to use */
+public function edit(Post $post)
+    {
+            $categories = Category::all();
+            return view('admin.posts.edit', compact('post', 'categories'));
+    }
+```
+
+### In edit.blade.php
+
+```php
+@foreach ($categories as $category)
+    <option value="{{ $category->id }}"
+        {{ $category->id == old('category_id', $post->category?->id) ? 'selected' : '' }}>
+        {{ $category->name }}</option>
+@endforeach
+```
+
+#### In UpdatePostRequest.php validatetion against hacker
+
+```php
+/* add FK field just like in StoreRequest.php */
+'category_id' => 'nullable|exists:categories,id',
+```
