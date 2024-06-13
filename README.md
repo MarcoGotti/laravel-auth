@@ -33,7 +33,7 @@ php artisan make:model -mcrsR Category
 
         foreach ($categories as $cat) {
             $category = new Category();
-            $category->name = $cat;
+            $category->name = $cat; /* carefull here */
             $category->slug = Str::of($category->name)->slug('-');;
             $category->save();
         }
@@ -65,7 +65,7 @@ php artisan db:seed
 ### Add FK to Dependent table.
 
 ```bash
-php artisan migration add_category_id_foreign_key_to_posts_table
+php artisan make:migration add_category_id_foreign_key_to_posts_table
 ```
 
 ```php
@@ -105,6 +105,7 @@ php artisan migrate
 ### In model Post.php
 
 ```php
+/* add field for mass assignment */
 protected $fillable = ['title', 'content', 'slug', 'cover_image', 'category_id', 'user_id'];
 
     /**
