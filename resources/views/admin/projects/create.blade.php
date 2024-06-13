@@ -30,6 +30,19 @@
             </div>
 
             <div class="mb-3">
+                <label for="type_id" class="form-label">Type</label>
+                <select class="form-select form-select-sm" name="type_id" id="type_id">
+                    <option selected disabled>Select one</option>
+
+                    @foreach ($types as $type)
+                        <option value="{{ $type->id }}" {{ $type->id == old('type_id') ? 'selected' : '' }}>
+                            {{ $type->level }}</option>
+                    @endforeach
+
+                </select>
+            </div>
+
+            <div class="mb-3">
                 <label for="cover_image" class="form-label">Cover image</label>
                 <input type="file" class="form-control @error('cover_image') is-invalid @enderror" name="cover_image"
                     id="cover_image" accept="image/png, image/jpeg" placeholder="Cover image"

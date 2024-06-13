@@ -23,6 +23,7 @@ class StoreProjectRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:projects,name|min:5|max:100',
+            'type_id' => 'nullable|exists:types,id',
             'cover_image' => 'nullable|image|max:500',
             'description' => 'required|min:10|max:2000'
         ];
