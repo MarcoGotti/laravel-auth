@@ -30,8 +30,9 @@
                             <td>{{ $type->level }}</td>
                             <td>{{ $type->slug }}</td>
                             <td class="text-center">
-                                <a class="text-white" href="{{-- {{ route('admin.types.show', $type) }} --}}">
-                                    <i class="fas fa-eye fa-xs fa-fw"></i></a>
+
+                                <a class="text-red" href="{{ route('admin.types.show', $type) }}">
+                                    See Projects</a>
 
                                 <!-- Modal trigger button -->
                                 <a type="button" class="text-white" data-bs-toggle="modal"

@@ -47,7 +47,10 @@ class TypeController extends Controller
      */
     public function show(Type $type)
     {
-        //
+        //dd($type);
+        /* $projects = array($type->projects);
+        dd($projects); */
+        return view('admin.types.show', compact('type'));
     }
 
     /**
