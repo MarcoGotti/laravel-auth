@@ -10,6 +10,8 @@ class Type extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['level', 'slug'];
+
     /**
      * Get all of the projects for the Type
      *
