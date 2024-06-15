@@ -11,6 +11,14 @@
         </div>
     </header>
 
+    @if (session('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
+        </div>
+    @endif
+
+
+
     <div class="container p-5">
         <div class="table-responsive">
             <table class="table table-dark text white">
@@ -19,6 +27,7 @@
                         <th scope="col">ID</th>
                         <th scope="col">Level</th>
                         <th scope="col">Slug</th>
+                        <th scope="col">Total Posts</th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -29,6 +38,8 @@
                             <td scope="row">{{ $type->id }}</td>
                             <td>{{ $type->level }}</td>
                             <td>{{ $type->slug }}</td>
+                            <td>{{ count($type->projects) }}</td>
+                            {{-- <td>{{ $type->projects->count() }}</td> --}}
                             <td class="text-center">
 
                                 <a class="text-red" href="{{ route('admin.types.show', $type) }}">

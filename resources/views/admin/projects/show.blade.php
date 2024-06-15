@@ -17,6 +17,7 @@
                 <div class="bg-dark h-100 text-white p-5">
                     <div class="metadata">
                         <strong>Types</strong> {{ $project->type ? $project->type->level : 'Unassigned' }}
+                        {{-- <strong>Types</strong> {{ $project->type?->level}} --}}
                     </div>
                     <h1>{{ $project->name }}</h1>
                     <p class="my-5">{{ $project->description }}</p>

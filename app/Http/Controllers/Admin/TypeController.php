@@ -32,7 +32,7 @@ class TypeController extends Controller
      */
     public function store(StoreTypeRequest $request)
     {
-        //dd($request);
+        //dd($request->all());
         $validatedData = $request->validated();
         $validatedData['slug'] = Str::of($request->level)->slug('-');
 
