@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Database\Seeders\ProjectSeeder;
 use Database\Seeders\TypeSeeder;
+use Database\Seeders\TechnologySeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,7 +17,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            ProjectSeeder::class
+            TechnologySeeder::class
         ]);
     }
 }
