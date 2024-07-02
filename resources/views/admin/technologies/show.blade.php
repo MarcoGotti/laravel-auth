@@ -1,19 +1,19 @@
 @extends('layouts.admin')
-@section('pageTitle', 'show-type')
+@section('pageTitle', 'show-techs')
 @section('content')
 
     <header class="bg-dark text-white py-4">
         <div class="container d-flex justify-content-between align-items-center">
             <h1>
-                {{ $type->level }} Projects
+                {{ $technology->name }} Projects
             </h1>
-            <a class="btn btn-secondary" href="{{ route('admin.types.index') }}">Back</a>
+            <a class="btn btn-secondary" href="{{ route('admin.technologies.index') }}">Back</a>
         </div>
     </header>
 
     <div class="container p-5">
         <div class="row row-cols-1 row-cols-sm-3 row-cols-md-4 justify-content-around g-3">
-            @forelse ($type->projects as $project)
+            @forelse ($technology->projects as $project)
                 <div class="col">
                     <div class="card">
                         <a href="{{ route('admin.projects.show', $project) }}">

@@ -6,6 +6,7 @@ use App\Http\Controllers\Guest\Pagecontroller;
 use App\Http\Controllers\Guest\Projectcontroller as GuestProjectcontroller;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\TechnologyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +35,8 @@ Route::middleware(['auth', 'verified'])
         Route::resource('projects', ProjectController::class)->parameters(['projects' => 'project:slug']);
 
         Route::resource('types', TypeController::class)->only(['index', 'show', 'create', 'store', 'destroy']);
+
+        Route::resource('technologies', TechnologyController::class);
     });
 
 
