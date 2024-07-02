@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Type;
+use App\Models\Technology;
 
 class ProjectController extends Controller
 {
@@ -18,7 +19,7 @@ class ProjectController extends Controller
     public function index()
     {
         //dd(Project::all());
-        $projects = Project::orderByDesc('id')->paginate(8);;
+        $projects = Project::orderByDesc('id')->paginate(12);;
         return view('admin.projects.index', compact('projects'));
     }
 
@@ -28,7 +29,8 @@ class ProjectController extends Controller
     public function create()
     {
         $types = Type::all();
-        return view('admin.projects.create', compact('types'));
+        $technologies = Technology::all();
+        return view('admin.projects.create', compact('types', 'technologies'));
     }
 
     /**
@@ -48,7 +50,8 @@ class ProjectController extends Controller
             $validatedData['cover_image'] = Storage::put('uploads', $request->cover_image);
         }
         //dd($validatedData);
-        Project::create($validatedData);
+        $project = Project::create($validatedData);
+        $project->technologies()->attach($validatedData['technologies']);
 
         return to_route('admin.projects.index')->with('message', 'project successfully created');
     }
@@ -67,7 +70,8 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::all();
-        return view('admin.projects.edit', compact('project', 'types'));
+        $technologies = Technology::all();
+        return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -106,6 +110,9 @@ class ProjectController extends Controller
         }
 
         $project->update($validatedData); //update
+        if ($request->has('technologies')) {
+            $project->technologies()->sync($validatedData['technologies']);
+        }
 
         return to_route('admin.projects.index')->with('message', 'Project updated successfully'); //redirect
 

@@ -37,12 +37,39 @@
                     <option selected disabled>Select one</option>
 
                     @foreach ($types as $type)
-                        <option value="{{ $type->id }}"
-                            {{ $type->id == old('type_id', $project->type->id) ? 'selected' : '' }}>
+                        <option value="{{ $type->id }}" {{-- !!! $project->type?->id !!! --}}
+                            {{ $type->id == old('type_id', $project->type?->id) ? 'selected' : '' }}>
                             {{ $type->level }}</option>
                     @endforeach
 
                 </select>
+            </div>
+
+            <div class="row my-5">
+                <div class="col-12 mb-2 text-decoration-underline">Technologies</div>
+
+                @forelse ($technologies as $tech)
+                    <div class="col-1">
+                        <div class="form-check">
+                            @if ($errors->any())
+                                <input class="form-check-input" type="checkbox" value="{{ $tech->id }}"
+                                    id="tech-{{ $tech->id }}" name="technologies[]"
+                                    {{ in_array($tech->id, old('technologies', [])) ? 'checked' : '' }} />
+                            @else
+                                <input class="form-check-input" type="checkbox" value="{{ $tech->id }}"
+                                    id="tech-{{ $tech->id }}" name="technologies[]"
+                                    {{ $project->technologies->contains($tech->id) ? 'checked' : '' }} />
+                            @endif
+                            <label class="form-check-label lh-1" for="tech-{{ $tech->id }}"> {{ $tech->name }}
+                            </label>
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-3 text-bg-warning">
+                        <div>You haven't got any category in your database!</div>
+                        <div>I recommand you add a few categories to relate to your photos.</div>
+                    </div>
+                @endforelse
             </div>
 
             <div class="d-flex gap-3 mb-3">

@@ -5,7 +5,7 @@
     <header class="bg-dark text-white py-4">
         <div class="container d-flex justify-content-between align-items-center">
             <h1>
-                {{ $technology->name }} Projects
+                Projects of technology {{ $technology->name }}
             </h1>
             <a class="btn btn-secondary" href="{{ route('admin.technologies.index') }}">Back</a>
         </div>
@@ -34,7 +34,7 @@
 
             @empty
 
-                <div class="col-12">No Projects of this level</div>
+                <div class="col-12">No Projects related to this tech</div>
             @endforelse
 
         </div>

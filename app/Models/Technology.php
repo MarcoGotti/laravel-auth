@@ -10,6 +10,8 @@ class Technology extends Model
 {
     use HasFactory;
 
+    //protected $fillable = ['name', 'slug']; //non uso mass-assignment per due proprietà, creo la nuova istanza direttamente nel Controller
+
     /**
      * The projects that belong to the Technology
      *

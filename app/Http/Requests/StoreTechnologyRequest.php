@@ -11,7 +11,7 @@ class StoreTechnologyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true; //non mi serve...vedi TechnologyController/store()
     }
 
     /**

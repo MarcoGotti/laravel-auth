@@ -19,6 +19,17 @@
                         <strong>Types</strong> {{ $project->type ? $project->type->level : 'Unassigned' }}
                         {{-- <strong>Types</strong> {{ $project->type?->level}} --}}
                     </div>
+
+                    <div class="technologies d-flex flex-wrap gap-1">
+                        <strong>Technologies</strong>
+                        @forelse ($project->technologies as $tech)
+                            <a class="btn btn-secondary btn-sm"
+                                href="{{ route('admin.technologies.show', $tech) }}">{{ $tech->name }}</a>
+                        @empty
+                            <div class="text-warning">Still no attached technologies</div>
+                        @endforelse
+                    </div>
+
                     <h1>{{ $project->name }}</h1>
                     <p class="my-5">{{ $project->description }}</p>
 

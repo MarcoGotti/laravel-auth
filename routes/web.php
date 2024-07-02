@@ -34,9 +34,9 @@ Route::middleware(['auth', 'verified'])
 
         Route::resource('projects', ProjectController::class)->parameters(['projects' => 'project:slug']);
 
-        Route::resource('types', TypeController::class)->only(['index', 'show', 'create', 'store', 'destroy']);
+        Route::resource('types', TypeController::class)->only(['index', 'show', 'create', 'store', 'destroy'])->parameters(['types' => 'type:slug']);
 
-        Route::resource('technologies', TechnologyController::class);
+        Route::resource('technologies', TechnologyController::class)->parameters(['technologies' => 'technology:slug']);
     });
 
 

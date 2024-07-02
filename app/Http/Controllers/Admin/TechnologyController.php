@@ -6,6 +6,8 @@ use App\Models\Technology;
 use App\Http\Requests\StoreTechnologyRequest;
 use App\Http\Requests\UpdateTechnologyRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class TechnologyController extends Controller
 {
@@ -29,9 +31,21 @@ class TechnologyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTechnologyRequest $request)
+    public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|unique:technologies,name'
+        ]);
+        /* //Se usassi Mass-assignment: 
+        $validatedData['slug'] = Str::of($validatedData['name'])->slug('-');
+        Technology::create($validatedData); 
+        //aggingi $fillable al Model*/
+        $technology = new Technology();
+        $technology->name = $validatedData['name'];
+        $technology->slug = Str::of($validatedData['name'])->slug('-');
+        $technology->save();
+
+        return to_route('admin.technologies.index')->with('message', 'technology added!');
     }
 
     /**
@@ -39,7 +53,7 @@ class TechnologyController extends Controller
      */
     public function show(Technology $technology)
     {
-        dd($technology);
+        //dd($technology);
         return view('admin.technologies.show', compact('technology'));
     }
 
@@ -64,6 +78,7 @@ class TechnologyController extends Controller
      */
     public function destroy(Technology $technology)
     {
-        //
+        $technology->delete();
+        return to_route('admin.technologies.index')->with('message', "Technology successfully deleted");
     }
 }
