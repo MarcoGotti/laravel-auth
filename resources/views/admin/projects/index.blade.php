@@ -24,7 +24,8 @@
                         <th scope="col">ID</th>
                         <th scope="col">Image</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Slug</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Technologies</th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -46,7 +47,34 @@
                                 </div>
                             </td>
                             <td>{{ $project->name }}</td>
-                            <td>{{ $project->slug }}</td>
+                            {{-- <td>{{ $project->type?->level }}</td> --}}
+                            {{-- <td>
+                                @isset($project->type->level)
+                                    {{ $project->type->level }}
+                                @endisset
+                            </td> --}}
+                            <td>
+                                @if (isset($project->type->level))
+                                    <a class="icon-link" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                                        href="{{ route('admin.types.show', $project->type) }}">
+                                        {{ $project->type->level }}
+                                    </a>
+                                @else
+                                    <div class="text-secondary">add a type</div>
+                                @endif
+                            </td>
+                            <td>
+                                @forelse ($project->technologies as $tech)
+                                    <div class="fs-6 lh-1">
+                                        <a class="icon-link" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                                            href="{{ route('admin.technologies.show', $tech) }}">
+                                            {{ $tech->name }}
+                                        </a>
+                                    </div>
+                                @empty
+                                    <div class="text-secondary">add techs</div>
+                                @endforelse
+                            </td>
                             <td class="text-center">
                                 <a class="text-white" href="{{ route('admin.projects.show', $project) }}">
                                     <i class="fas fa-eye fa-xs fa-fw"></i></a>
