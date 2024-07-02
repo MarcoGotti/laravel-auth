@@ -18,6 +18,11 @@
     @endif
 
     <div class="container p-5">
+
+        @error('name')
+            <div class="alert alert-danger text-danger">{{ $message }}</div>
+        @enderror
+
         <div class="row">
             <div class="col-3">
 
@@ -28,19 +33,15 @@
 
                     <div class="mb-3">
                         <label for="name" class="form-label">Add a new technology</label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror" name="name"
+                        <input type="text" class="form-control @error('names') is-invalid @enderror" name="name"
                             id="name" aria-describedby="helpId" placeholder="es. Concert" />
-
-                        @error('name')
-                            <div class="alert alert-danger text-danger">{{ $message }}</div>
-                        @enderror
                     </div>
-
 
                     <button class="btn btn-sm btn-dark" type="submit">Save</button>
 
                 </form>
             </div>
+
             <div class="col-9">
                 <div class="table-responsive">
                     <table class="table table-dark text white">
@@ -58,7 +59,18 @@
                             @forelse ($technologies as $tech)
                                 <tr class="align-middle">
                                     <td scope="row">{{ $tech->id }}</td>
-                                    <td>{{ $tech->name }}</td>
+                                    <td>
+                                        <form action="{{ route('admin.technologies.update', $tech) }}" method="post">
+                                            @csrf
+                                            @method('PUT')
+
+                                            <div class="mb-3">
+                                                <input type="text" class="w-50 form-control form-control-sm"
+                                                    name="name" value="{{ $tech->name }}" />
+
+                                            </div>
+                                        </form>
+                                    </td>
                                     <td>{{ $tech->slug }}</td>
                                     <td>
                                         <a class="btn btn-sm btn-success"

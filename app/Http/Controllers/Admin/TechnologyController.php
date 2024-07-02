@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateTechnologyRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TechnologyController extends Controller
 {
@@ -68,9 +69,18 @@ class TechnologyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTechnologyRequest $request, Technology $technology)
+    public function update(Request $request, Technology $technology)
     {
-        //
+        //dd($request->all());
+        $validatedData = $request->validate([
+            'name' => ['required', Rule::unique('technologies')->ignore($technology->id)],
+        ]);
+
+        $technology->name = $validatedData['name'];
+        $technology->slug = Str::of($validatedData['name'])->slug('-');
+        $technology->save();
+
+        return to_route('admin.technologies.index')->with('message', 'technology updated!');
     }
 
     /**
