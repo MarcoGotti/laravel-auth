@@ -8,9 +8,19 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::with(['type', 'technologies'])->orderByDesc('id')->paginate(10);
+        if ($request->has('search') && $request->search != '') {
+            //dd($request->search); //il dd() da problemi => usa return ...
+            return response()->json([
+                //'search' => $request->search,
+                'success' => true,
+                'results' => Project::with(['type', 'technologies'])->orderByDesc('id')->where('name', 'LIKE', '%' . $request->search . '%')->paginate(4)
+
+            ]);
+        }
+
+        $projects = Project::with(['type', 'technologies'])->orderByDesc('id')->paginate(6);
         return response()->json([
             'success' => true,
             'results' => $projects
